@@ -1,0 +1,8 @@
+recursive-include app/templates *.html *.txt
+recursive-include app/static *.*
+recursive-include myproject/templates *.*
+include manage.py
+recursive-include myproject *.py
+recursive-include app *.py
+global-exclude *.pyc
+global-exclude __pycache__/*
