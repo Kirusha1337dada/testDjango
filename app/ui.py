@@ -74,3 +74,60 @@ class UserEditWindow(BaseEditWindow):
         super(UserEditWindow, self).set_params(params)
         self.height = 'auto'
         self.title = 'User: Редактирование'
+
+class PermissionAddWindow(BaseEditWindow):
+    def _init_components(self):
+        super(PermissionAddWindow, self)._init_components()
+
+        self.field__name = ext.ExtStringField(name='name', label='name', allow_blank=False, anchor='100%')
+        self.field__contenttype = ext.ExtDictSelectField(name='content_type__pk', label='content type',allow_blank=False, anchor='100%')
+
+        from django.utils.module_loading import import_string
+        ContentTypePack = import_string('app.actions.ContentTypePack')
+        self.field__contenttype.pack = ContentTypePack
+        self.field__contenttype.value_field = 'id'
+        self.field__contenttype.display_field = 'model'
+        self.field__contenttype.force_selection = True
+
+        self.field__codename = ext.ExtStringField(name='codename',label='codename',allow_blank=False,anchor='100%')
+
+    def _do_layout(self):
+        super(PermissionAddWindow, self)._do_layout()
+        self.form.items.extend((
+            self.field__name,
+            self.field__contenttype,
+            self.field__codename
+        ))
+
+    def set_params(self, params):
+        super(PermissionAddWindow, self).set_params(params)
+        self.height = 'auto'
+        self.title = 'Permission: Добавление'
+
+class PermissionEditWindow(BaseEditWindow):
+    def _init_components(self):
+        super(PermissionEditWindow, self)._init_components()
+
+        self.field__name = ext.ExtStringField(name='name', label='name', allow_blank=False, anchor='100%')
+        self.field__contenttype = ext.ExtDictSelectField(name='content_type__pk', label='content type',allow_blank=False, anchor='100%')
+        from django.utils.module_loading import import_string
+        ContentTypePack = import_string('app.actions.ContentTypePack')
+        self.field__contenttype.pack = ContentTypePack
+        self.field__contenttype.value_field = 'id'
+        self.field__contenttype.display_field = 'model'
+        self.field__contenttype.force_selection = True
+
+        self.field__codename = ext.ExtStringField(name='codename',label='codename',allow_blank=False,anchor='100%')
+
+    def _do_layout(self):
+        super(PermissionEditWindow, self)._do_layout()
+        self.form.items.extend((
+            self.field__name,
+            self.field__contenttype,
+            self.field__codename
+        ))
+
+    def set_params(self, params):
+        super(PermissionEditWindow, self).set_params(params)
+        self.height = 'auto'
+        self.title = 'Permission: Редактирование'
