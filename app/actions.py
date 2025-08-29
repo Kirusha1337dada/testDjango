@@ -2,8 +2,7 @@ from objectpack.actions import ObjectPack
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from objectpack.ui import ModelEditWindow
-
-from app.ui import UserAddWindow, UserEditWindow
+from app.ui import UserAddWindow, UserEditWindow, PermissionAddWindow, PermissionEditWindow
 
 
 class ContentTypePack(ObjectPack):
@@ -13,7 +12,7 @@ class ContentTypePack(ObjectPack):
     add_to_desktop=True
 
     add_window = ModelEditWindow.fabricate(model=ContentType)
-    add_windows = edit_window = ModelEditWindow.fabricate(model=ContentType)
+    edit_window = ModelEditWindow.fabricate(model=ContentType)
     can_delete = True
 
     title="Content types"
@@ -25,7 +24,7 @@ class UserPack(ObjectPack):
     add_to_desktop=True
 
     add_window = UserAddWindow
-    add_windows = edit_window = UserEditWindow
+    edit_window = UserEditWindow
     can_delete = True
 
     columns=[
@@ -47,7 +46,7 @@ class GroupPack(ObjectPack):
     add_to_desktop=True
 
     add_window = ModelEditWindow.fabricate(model=Group)
-    add_windows = edit_window = ModelEditWindow.fabricate(model=Group)
+    edit_window = ModelEditWindow.fabricate(model=Group)
     can_delete = True
 
     title="Groups"
@@ -58,8 +57,19 @@ class PermissionPack(ObjectPack):
     add_to_menu = True
     add_to_desktop = True
 
-    add_window = ModelEditWindow.fabricate(model=Permission)
-    add_windows = edit_window = ModelEditWindow.fabricate(model=Permission)
+    add_window=PermissionAddWindow
+    edit_window=PermissionEditWindow
     can_delete = True
 
+    columns = [
+        {'data_index': 'name'},
+        {'data_index': 'content_type'},
+        {'data_index': 'codename'},
+    ]
+
     title="Permissions"
+
+    def save_row(self, obj, create_new, request, context):
+        ct_pk = (request.POST.get('content_type__pk')  or request.POST.get('content_type_id') or request.POST.get('content_type'))
+        obj.content_type_id = int(ct_pk)
+        return super().save_row(obj, create_new, request, context)
